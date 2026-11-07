@@ -17,6 +17,7 @@ people and coding agents follow when building the frontend.
 | [`docs/components.md`](docs/components.md) | Components: when to use, when not, specs, examples. |
 | [`docs/patterns.md`](docs/patterns.md) | Page layouts, navigation, action placement, states. |
 | [`docs/reference/index.html`](docs/reference/index.html) | Visual reference page. Open it in a browser (light/dark toggle in the header). |
+| [`docs/architecture.md`](docs/architecture.md) | Stack, monorepo layout, backend structure, data model and system rules. |
 
 **Basis:** Microsoft Fluent 2. The intended stack is React, TypeScript, Vite, Fluent UI React v9
 (`@fluentui/react-components`), `@fluentui/react-icons` and `@fluentui/react-datepicker-compat`.
