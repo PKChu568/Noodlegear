@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Noodlegear.Api/Noodlegear.Api.csproj" />
+    <Project Path="src/Noodlegear.Application/Noodlegear.Application.csproj" />
+    <Project Path="src/Noodlegear.Domain/Noodlegear.Domain.csproj" />
+    <Project Path="src/Noodlegear.Infrastructure/Noodlegear.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Noodlegear.IntegrationTests/Noodlegear.IntegrationTests.csproj" />
+    <Project Path="tests/Noodlegear.UnitTests/Noodlegear.UnitTests.csproj" />
+  </Folder>
+</Solution>
