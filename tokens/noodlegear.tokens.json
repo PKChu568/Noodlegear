@@ -1,0 +1,269 @@
+{
+  "$meta": {
+    "name": "Noodlegear Design Tokens",
+    "version": "1.0.0",
+    "basedOn": "Microsoft Fluent 2 — @fluentui/react-components v9 (webLightTheme / webDarkTheme generated from the brand ramp below)",
+    "sourceOfTruth": "This file is the single source of truth for every visual value in Noodlegear. Docs: docs/design-tokens.md.",
+    "howToConsume": [
+      "Colour, typography, spacing, radius, stroke, shadow and motion: use the Fluent token named in `fluentToken` (e.g. tokens.colorNeutralBackground2). Never paste the hex/px value into code.",
+      "Build the Fluent themes with createLightTheme(brand) / createDarkTheme(brand) using `brand`, then apply the overrides listed in `themeOverrides`.",
+      "Noodlegear-only groups (layout, breakpoints, zIndex, iconSize, density, status) have no Fluent equivalent. Expose them as CSS variables named `--ng-<group>-<kebab-key>` (e.g. --ng-layout-header-height) generated from this file.",
+      "Values under `light` / `dark` are for reference, design review and non-React tooling. They are produced by Fluent and must not be redefined by hand."
+    ]
+  },
+
+  "brand": {
+    "$description": "Fluent 2 BrandVariants ramp (10 = darkest, 160 = lightest). Microsoft enterprise web blue. 80 is the primary accent in light theme.",
+    "10": "#061724",
+    "20": "#082338",
+    "30": "#0A2E4A",
+    "40": "#0C3B5E",
+    "50": "#0E4775",
+    "60": "#0F548C",
+    "70": "#115EA3",
+    "80": "#0F6CBD",
+    "90": "#2886DE",
+    "100": "#479EF5",
+    "110": "#62ABF5",
+    "120": "#77B7F7",
+    "130": "#96C6FA",
+    "140": "#B4D6FA",
+    "150": "#CFE4FA",
+    "160": "#EBF3FC"
+  },
+
+  "themeOverrides": {
+    "$description": "Applied on top of the generated Fluent themes. Nothing else may be overridden.",
+    "light": {},
+    "dark": {
+      "colorBrandForeground1": "brand.110",
+      "colorBrandForeground2": "brand.120",
+      "colorBrandForegroundLink": "brand.110",
+      "colorBrandForegroundLinkHover": "brand.120",
+      "colorBrandForegroundLinkPressed": "brand.100"
+    }
+  },
+
+  "color": {
+    "$description": "Semantic colour roles. Use the role that describes the job, never a colour that merely looks right.",
+    "surface": {
+      "canvas":          { "fluentToken": "colorNeutralBackground2", "light": "#fafafa", "dark": "#1f1f1f", "usage": "App canvas behind page content." },
+      "surface":         { "fluentToken": "colorNeutralBackground1", "light": "#ffffff", "dark": "#292929", "usage": "Header, sidebar, sections, tables, panels, dialogs, inputs." },
+      "surfaceHover":    { "fluentToken": "colorNeutralBackground1Hover", "light": "#f5f5f5", "dark": "#3d3d3d", "usage": "Hovered table row / list item on a surface." },
+      "surfacePressed":  { "fluentToken": "colorNeutralBackground1Pressed", "light": "#e0e0e0", "dark": "#1f1f1f", "usage": "Pressed row / list item." },
+      "surfaceSelected": { "fluentToken": "colorNeutralBackground1Selected", "light": "#ebebeb", "dark": "#383838", "usage": "Selected row / active record in a list." },
+      "subtle":          { "fluentToken": "colorNeutralBackground3", "light": "#f5f5f5", "dark": "#141414", "usage": "Inset areas: table header band, read-only field groups, code." },
+      "subtleStrong":    { "fluentToken": "colorNeutralBackground4", "light": "#f0f0f0", "dark": "#0a0a0a", "usage": "Rare. Skeleton base, disabled regions." },
+      "brandTint":       { "fluentToken": "colorBrandBackground2", "light": "#EBF3FC", "dark": "#082338", "usage": "Selected nav item background tint, informational highlight. Never a large fill." },
+      "overlay":         { "fluentToken": "colorBackgroundOverlay", "light": "rgba(0, 0, 0, 0.4)", "dark": "rgba(0, 0, 0, 0.5)", "usage": "Modal backdrop (Fluent handles it)." },
+      "inverted":        { "fluentToken": "colorNeutralBackgroundInverted", "light": "#292929", "dark": "#ffffff", "usage": "Tooltips only (Fluent handles it)." }
+    },
+    "text": {
+      "primary":    { "fluentToken": "colorNeutralForeground1", "light": "#242424", "dark": "#ffffff", "usage": "Body text, titles, cell values." },
+      "secondary":  { "fluentToken": "colorNeutralForeground2", "light": "#424242", "dark": "#d6d6d6", "usage": "Field labels, secondary values, icons in toolbars." },
+      "tertiary":   { "fluentToken": "colorNeutralForeground3", "light": "#616161", "dark": "#adadad", "usage": "Descriptions, metadata, timestamps, helper text, column headers." },
+      "quaternary": { "fluentToken": "colorNeutralForeground4", "light": "#707070", "dark": "#999999", "usage": "Placeholder-level emphasis only. Not for essential information." },
+      "disabled":   { "fluentToken": "colorNeutralForegroundDisabled", "light": "#bdbdbd", "dark": "#5c5c5c", "usage": "Disabled controls only (exempt from contrast rules)." },
+      "onBrand":    { "fluentToken": "colorNeutralForegroundOnBrand", "light": "#ffffff", "dark": "#ffffff", "usage": "Text on brand fills (primary button)." },
+      "brand":      { "fluentToken": "colorBrandForeground1", "light": "#0F6CBD", "dark": "#62ABF5", "usage": "Selected nav text/icon, active tab, brand emphasis." },
+      "link":       { "fluentToken": "colorBrandForegroundLink", "light": "#115EA3", "dark": "#62ABF5", "usage": "Links (via Fluent <Link>)." }
+    },
+    "brandFill": {
+      "rest":     { "fluentToken": "colorBrandBackground", "light": "#0F6CBD", "dark": "#115EA3", "usage": "Primary button, checked checkbox/switch/radio, progress fill." },
+      "hover":    { "fluentToken": "colorBrandBackgroundHover", "light": "#115EA3", "dark": "#0F6CBD", "usage": "Hover of the above." },
+      "pressed":  { "fluentToken": "colorBrandBackgroundPressed", "light": "#0C3B5E", "dark": "#0C3B5E", "usage": "Pressed of the above." },
+      "selected": { "fluentToken": "colorBrandBackgroundSelected", "light": "#0F548C", "dark": "#0F548C", "usage": "Selected toggle button." }
+    },
+    "stroke": {
+      "control":    { "fluentToken": "colorNeutralStroke1", "light": "#d1d1d1", "dark": "#666666", "usage": "Input and secondary button borders." },
+      "divider":    { "fluentToken": "colorNeutralStroke2", "light": "#e0e0e0", "dark": "#525252", "usage": "Section/surface borders, header and sidebar separators, table row lines." },
+      "subtle":     { "fluentToken": "colorNeutralStroke3", "light": "#f0f0f0", "dark": "#3d3d3d", "usage": "Dividers inside a surface (between description-list rows)." },
+      "accessible": { "fluentToken": "colorNeutralStrokeAccessible", "light": "#616161", "dark": "#adadad", "usage": "Input bottom border, checkbox/radio outlines (3:1 non-text contrast)." },
+      "brand":      { "fluentToken": "colorCompoundBrandStroke", "light": "#0F6CBD", "dark": "#479EF5", "usage": "Focused input underline, selected indicator bar." }
+    },
+    "focus": {
+      "inner": { "fluentToken": "colorStrokeFocus1", "light": "#ffffff", "dark": "#000000", "usage": "Inner ring of the focus indicator." },
+      "outer": { "fluentToken": "colorStrokeFocus2", "light": "#000000", "dark": "#ffffff", "usage": "Outer 2px ring of the focus indicator." }
+    },
+    "status": {
+      "$description": "Only for communicating state. Always paired with a text label or icon; colour alone never carries meaning.",
+      "successBackground": { "fluentToken": "colorStatusSuccessBackground1", "light": "#f1faf1", "dark": "#052505" },
+      "successForeground": { "fluentToken": "colorStatusSuccessForeground1", "light": "#0e700e", "dark": "#54b054" },
+      "successBorder":     { "fluentToken": "colorStatusSuccessBorder1", "light": "#9fd89f", "dark": "#107c10" },
+      "successSolid":      { "fluentToken": "colorStatusSuccessBackground3", "light": "#107c10", "dark": "#107c10", "usage": "Status dots only." },
+      "warningBackground": { "fluentToken": "colorStatusWarningBackground1", "light": "#fff9f5", "dark": "#4a1e04" },
+      "warningForeground": { "fluentToken": "colorStatusWarningForeground3", "light": "#bc4b09", "dark": "#f98845" },
+      "warningBorder":     { "fluentToken": "colorStatusWarningBorder1", "light": "#fdcfb4", "dark": "#f7630c" },
+      "warningSolid":      { "fluentToken": "colorStatusWarningBackground3", "light": "#f7630c", "dark": "#f7630c", "usage": "Status dots only." },
+      "dangerBackground":  { "fluentToken": "colorStatusDangerBackground1", "light": "#fdf3f4", "dark": "#3b0509" },
+      "dangerForeground":  { "fluentToken": "colorStatusDangerForeground1", "light": "#b10e1c", "dark": "#dc626d" },
+      "dangerBorder":      { "fluentToken": "colorStatusDangerBorder1", "light": "#eeacb2", "dark": "#c50f1f" },
+      "dangerSolid":       { "fluentToken": "colorStatusDangerBackground3", "light": "#c50f1f", "dark": "#c50f1f", "usage": "Status dots only." },
+      "infoBackground":    { "fluentToken": "colorBrandBackground2", "light": "#EBF3FC", "dark": "#082338" },
+      "infoForeground":    { "fluentToken": "colorBrandForeground2", "light": "#115EA3", "dark": "#77B7F7" },
+      "neutralBackground": { "fluentToken": "colorNeutralBackground3", "light": "#f5f5f5", "dark": "#141414" },
+      "neutralForeground": { "fluentToken": "colorNeutralForeground3", "light": "#616161", "dark": "#adadad" }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "base":      { "fluentToken": "fontFamilyBase", "value": "'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif" },
+      "monospace": { "fluentToken": "fontFamilyMonospace", "value": "Consolas, 'Courier New', Courier, monospace", "usage": "IDs, licence numbers, registration plates when alignment matters." },
+      "numeric":   { "value": "font-variant-numeric: tabular-nums", "usage": "Apply to money, counts, times and dates in tables and metrics." }
+    },
+    "weight": {
+      "regular":  { "fluentToken": "fontWeightRegular", "value": 400, "usage": "Default." },
+      "semibold": { "fluentToken": "fontWeightSemibold", "value": 600, "usage": "Titles, headings, emphasis, column headers." },
+      "medium":   { "fluentToken": "fontWeightMedium", "value": 500, "usage": "Not used. Fluent controls only." },
+      "bold":     { "fluentToken": "fontWeightBold", "value": 700, "usage": "Not used in Noodlegear UI." }
+    },
+    "scale": {
+      "$description": "Use Fluent `typographyStyles.<name>` or the <Text>/<Caption1>/<Body1>/<Subtitle2>/<Title3> components. Nothing above title2 is allowed in the application.",
+      "caption2":      { "fontSize": "10px", "lineHeight": "14px", "weight": 400, "usage": "Avoid. Chart axis labels only." },
+      "caption1":      { "fontSize": "12px", "lineHeight": "16px", "weight": 400, "usage": "Metadata, timestamps, helper text, badge text, table footers." },
+      "caption1Strong":{ "fontSize": "12px", "lineHeight": "16px", "weight": 600, "usage": "Nav section headers, metric labels." },
+      "body1":         { "fontSize": "14px", "lineHeight": "20px", "weight": 400, "usage": "Default UI text: cells, inputs, labels, paragraphs." },
+      "body1Strong":   { "fontSize": "14px", "lineHeight": "20px", "weight": 600, "usage": "Emphasis inside body text, primary cell (record name)." },
+      "body2":         { "fontSize": "16px", "lineHeight": "22px", "weight": 400, "usage": "Rare. Empty-state description." },
+      "subtitle2":     { "fontSize": "16px", "lineHeight": "22px", "weight": 600, "usage": "Section headings, dialog titles of small dialogs, panel section titles." },
+      "subtitle1":     { "fontSize": "20px", "lineHeight": "28px", "weight": 600, "usage": "Dialog titles, detail panel titles, empty-state titles." },
+      "title3":        { "fontSize": "24px", "lineHeight": "32px", "weight": 600, "usage": "Page title (exactly one per page)." },
+      "title2":        { "fontSize": "28px", "lineHeight": "36px", "weight": 600, "usage": "Metric values only." },
+      "title1":        { "fontSize": "32px", "lineHeight": "40px", "weight": 600, "usage": "Not allowed." },
+      "largeTitle":    { "fontSize": "40px", "lineHeight": "52px", "weight": 600, "usage": "Not allowed." },
+      "display":       { "fontSize": "68px", "lineHeight": "92px", "weight": 600, "usage": "Not allowed." }
+    }
+  },
+
+  "spacing": {
+    "$description": "4px grid. Fluent defines horizontal and vertical variants with identical values (spacingHorizontalM / spacingVerticalM). Use the axis that matches the property.",
+    "none":   { "fluentSuffix": "None",   "value": "0" },
+    "xxs":    { "fluentSuffix": "XXS",    "value": "2px",  "usage": "Icon-to-text in badges." },
+    "xs":     { "fluentSuffix": "XS",     "value": "4px",  "usage": "Label to control, inline icon gap, between stacked caption lines." },
+    "sNudge": { "fluentSuffix": "SNudge", "value": "6px",  "usage": "Fluent internal; avoid." },
+    "s":      { "fluentSuffix": "S",      "value": "8px",  "usage": "Between buttons in a group, toolbar item gap, cell inner gap." },
+    "mNudge": { "fluentSuffix": "MNudge", "value": "10px", "usage": "Fluent internal; avoid." },
+    "m":      { "fluentSuffix": "M",      "value": "12px", "usage": "Filter bar gap, card internal gap, description-list row gap." },
+    "l":      { "fluentSuffix": "L",      "value": "16px", "usage": "Section padding, form field vertical gap, gap between sections, compact page gutter." },
+    "xl":     { "fluentSuffix": "XL",     "value": "20px", "usage": "Page top padding, dialog padding (Fluent)." },
+    "xxl":    { "fluentSuffix": "XXL",    "value": "24px", "usage": "Page side gutter (desktop), form column gap, between page header and content." },
+    "xxxl":   { "fluentSuffix": "XXXL",   "value": "32px", "usage": "Empty-state padding. Largest spacing in the app." }
+  },
+
+  "radius": {
+    "none":     { "fluentToken": "borderRadiusNone", "value": "0", "usage": "Header, sidebar, table cells, full-bleed regions." },
+    "small":    { "fluentToken": "borderRadiusSmall", "value": "2px", "usage": "Checkbox, small tags, status dots inner." },
+    "medium":   { "fluentToken": "borderRadiusMedium", "value": "4px", "usage": "DEFAULT. Buttons, inputs, sections, cards, menus, badges." },
+    "large":    { "fluentToken": "borderRadiusLarge", "value": "6px", "usage": "Not used (Fluent internal)." },
+    "xLarge":   { "fluentToken": "borderRadiusXLarge", "value": "8px", "usage": "Dialogs and popovers only (Fluent default)." },
+    "circular": { "fluentToken": "borderRadiusCircular", "value": "10000px", "usage": "Avatars, status dots, pill badges." }
+  },
+
+  "stroke": {
+    "thin":    { "fluentToken": "strokeWidthThin", "value": "1px", "usage": "All borders and separators." },
+    "thick":   { "fluentToken": "strokeWidthThick", "value": "2px", "usage": "Focus ring, focused input underline." },
+    "thicker": { "fluentToken": "strokeWidthThicker", "value": "3px", "usage": "Selected nav / tab indicator bar." },
+    "style":   { "value": "solid", "usage": "Always solid. Dashed only for file drop zones." }
+  },
+
+  "shadow": {
+    "$description": "Elevation communicates layering, not decoration. Static page content has NO shadow — use a 1px divider border instead.",
+    "level0":  { "fluentToken": null,       "light": "none", "dark": "none", "usage": "Page content, sections, tables, metric cards, header, sidebar." },
+    "shadow2": { "fluentToken": "shadow2",  "light": "0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14)", "dark": "0 0 2px rgba(0,0,0,0.24), 0 1px 2px rgba(0,0,0,0.28)", "usage": "Sticky table header / sticky form footer when content scrolls under it." },
+    "shadow4": { "fluentToken": "shadow4",  "light": "0 0 2px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.14)", "dark": "0 0 2px rgba(0,0,0,0.24), 0 2px 4px rgba(0,0,0,0.28)", "usage": "Hover lift on interactive cards (optional, sparingly)." },
+    "shadow8": { "fluentToken": "shadow8",  "light": "0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14)", "dark": "0 0 2px rgba(0,0,0,0.24), 0 4px 8px rgba(0,0,0,0.28)", "usage": "Toasts (Fluent)." },
+    "shadow16":{ "fluentToken": "shadow16", "light": "0 0 2px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.14)", "dark": "0 0 2px rgba(0,0,0,0.24), 0 8px 16px rgba(0,0,0,0.28)", "usage": "Menus, popovers, dropdown lists, date picker (Fluent)." },
+    "shadow28":{ "fluentToken": "shadow28", "light": "0 0 8px rgba(0,0,0,0.12), 0 14px 28px rgba(0,0,0,0.14)", "dark": "0 0 8px rgba(0,0,0,0.24), 0 14px 28px rgba(0,0,0,0.28)", "usage": "Not used." },
+    "shadow64":{ "fluentToken": "shadow64", "light": "0 0 8px rgba(0,0,0,0.12), 0 32px 64px rgba(0,0,0,0.14)", "dark": "0 0 8px rgba(0,0,0,0.24), 0 32px 64px rgba(0,0,0,0.28)", "usage": "Dialogs and overlay drawers (Fluent)." }
+  },
+
+  "motion": {
+    "$description": "Use Fluent component motion only. No custom or decorative animation. Respect prefers-reduced-motion.",
+    "durationFast":   { "fluentToken": "durationFast", "value": "150ms", "usage": "Hover/press colour transitions." },
+    "durationNormal": { "fluentToken": "durationNormal", "value": "200ms", "usage": "Drawer and dialog enter/exit (Fluent)." },
+    "easing":         { "fluentToken": "curveEasyEase", "value": "cubic-bezier(0.33,0,0.67,1)" }
+  },
+
+  "layout": {
+    "$description": "Noodlegear-only. CSS variables: --ng-layout-<kebab-key>.",
+    "headerHeight":                { "value": "48px",   "usage": "Top app header." },
+    "sidebarWidth":                { "value": "240px",  "usage": "Expanded sidebar navigation." },
+    "contentMaxWidth":             { "value": "1600px", "usage": "Max width of page content on very wide screens (list/dashboard pages)." },
+    "contentPaddingInline":        { "value": "24px",   "usage": "Page side gutter at >= md." },
+    "contentPaddingInlineCompact": { "value": "16px",   "usage": "Page side gutter below md." },
+    "contentPaddingBlock":         { "value": "20px",   "usage": "Page top/bottom padding." },
+    "formMaxWidth":                { "value": "960px",  "usage": "Full-page create/edit forms." },
+    "readableMaxWidth":            { "value": "720px",  "usage": "Settings pages, long text." },
+    "detailPanelWidth":            { "value": "480px",  "usage": "Side detail panel (drawer) default." },
+    "detailPanelWidthWide":        { "value": "720px",  "usage": "Side panel containing a form or table." },
+    "dialogWidthSmall":            { "value": "440px",  "usage": "Confirmations." },
+    "dialogWidthMedium":           { "value": "600px",  "usage": "Short forms (record payment, reschedule)." },
+    "dialogWidthLarge":            { "value": "880px",  "usage": "Rare. Multi-column forms. Prefer a page or panel." },
+    "searchFieldWidth":            { "value": "280px",  "usage": "Search box in filter bars." },
+    "filterFieldWidth":            { "value": "200px",  "usage": "Dropdown filters in filter bars." },
+    "metricCardMinWidth":          { "value": "200px",  "usage": "Summary metric grid column minimum." },
+    "formColumnMinWidth":          { "value": "260px",  "usage": "Minimum width of a form grid column before it wraps." }
+  },
+
+  "breakpoints": {
+    "$description": "Min-width breakpoints in px. Desktop-first: design at lg (1366), adapt down. CSS variables cannot be used in media queries — use the raw numbers via a TS constant.",
+    "sm": { "value": 640,  "usage": "Below: phone. Single column, stacked filters, card-list instead of wide tables." },
+    "md": { "value": 1024, "usage": "Below: tablet. Sidebar becomes an overlay drawer, form grids collapse to 1 column, compact gutter." },
+    "lg": { "value": 1366, "usage": "Reference desktop (common office laptop)." },
+    "xl": { "value": 1920, "usage": "Wide desktop. Content stops at contentMaxWidth." }
+  },
+
+  "zIndex": {
+    "$description": "In-page layers only. Fluent overlays (Dialog, Drawer, Popover, Menu, Tooltip, Toast) render in portals and manage stacking themselves — never assign them a z-index.",
+    "base":    { "value": 0 },
+    "raised":  { "value": 1,    "usage": "Focused/selected element overlapping a neighbour's border." },
+    "sticky":  { "value": 100,  "usage": "Sticky table header, sticky form footer, sticky command bar." },
+    "header":  { "value": 200,  "usage": "App header." },
+    "sidebar": { "value": 300,  "usage": "Inline sidebar when it overlaps content." },
+    "overlay": { "value": 1000, "usage": "Reserved. Custom overlays are not allowed; listed to prevent ad-hoc values." }
+  },
+
+  "iconSize": {
+    "$description": "Fluent UI React Icons (@fluentui/react-icons). Use the size-suffixed export (e.g. Calendar20Regular) or the un-suffixed one inside Fluent slots (Fluent sizes it).",
+    "small":  { "value": "16px", "usage": "Inside table cells, badges, captions, inline with 12px text." },
+    "medium": { "value": "20px", "usage": "DEFAULT. Buttons, nav items, toolbars, inputs, menus." },
+    "large":  { "value": "24px", "usage": "Page-level emphasis, metric card icon, message bar." },
+    "xlarge": { "value": "32px", "usage": "Rare. Profile header fallback icon." },
+    "empty":  { "value": "48px", "usage": "Empty-state illustration icon only." },
+    "style":  { "value": "Regular at rest; Filled for selected/active state (use bundleIcon(Filled, Regular) in nav)." }
+  },
+
+  "density": {
+    "$description": "Control and row sizes. Noodlegear is compact-but-comfortable.",
+    "controlHeightSmall":  { "value": "24px", "fluentSize": "small",  "usage": "Controls inside table rows and dense toolbars." },
+    "controlHeightMedium": { "value": "32px", "fluentSize": "medium", "usage": "DEFAULT for all buttons, inputs, selects, date pickers." },
+    "controlHeightLarge":  { "value": "40px", "fluentSize": "large",  "usage": "Not used in the application." },
+    "tableRowExtraSmall":  { "value": "24px", "fluentSize": "extra-small", "usage": "Nested/inline tables inside panels." },
+    "tableRowSmall":       { "value": "34px", "fluentSize": "small",  "usage": "DEFAULT for list screens (learners, bookings, payments)." },
+    "tableRowMedium":      { "value": "44px", "fluentSize": "medium", "usage": "Tables whose rows contain avatars or two-line cells." },
+    "navItemHeight":       { "value": "40px", "fluentSize": "Nav density medium", "usage": "Sidebar items." },
+    "defaultPageSize":     { "value": 25,     "usage": "Rows per page. Options: 25, 50, 100." }
+  },
+
+  "status": {
+    "$description": "The ONLY allowed mapping from business statuses to visual tone. Add new statuses here first, then use them. tone → Fluent Badge: success→success, warning→warning, danger→danger, info→brand, neutral→informative; appearance 'tint' in tables, 'filled' never.",
+    "tones": {
+      "success": { "badgeColor": "success",     "dot": "colorStatusSuccessBackground3", "meaning": "Completed, paid, passed, healthy." },
+      "warning": { "badgeColor": "warning",     "dot": "colorStatusWarningBackground3", "meaning": "Needs attention soon: due, partially paid, expiring." },
+      "danger":  { "badgeColor": "danger",      "dot": "colorStatusDangerBackground3",  "meaning": "Problem or blocked: overdue, failed, no-show, off road." },
+      "info":    { "badgeColor": "brand",       "dot": "colorBrandBackground",          "meaning": "In progress / scheduled / upcoming." },
+      "neutral": { "badgeColor": "informative", "dot": "colorNeutralForeground3",       "meaning": "Inactive, draft, cancelled, archived." }
+    },
+    "domains": {
+      "learner":    { "enquiry": ["Enquiry", "neutral"], "active": ["Active", "success"], "onHold": ["On hold", "warning"], "testReady": ["Test ready", "info"], "passed": ["Passed", "success"], "withdrawn": ["Withdrawn", "neutral"] },
+      "instructor": { "available": ["Available", "success"], "onLesson": ["On lesson", "info"], "onLeave": ["On leave", "neutral"], "inactive": ["Inactive", "neutral"] },
+      "lesson":     { "scheduled": ["Scheduled", "info"], "inProgress": ["In progress", "info"], "completed": ["Completed", "success"], "cancelled": ["Cancelled", "neutral"], "noShow": ["No-show", "danger"], "rescheduled": ["Rescheduled", "warning"] },
+      "payment":    { "paid": ["Paid", "success"], "partiallyPaid": ["Partially paid", "warning"], "pending": ["Pending", "info"], "overdue": ["Overdue", "danger"], "refunded": ["Refunded", "neutral"], "void": ["Void", "neutral"] },
+      "invoice":    { "draft": ["Draft", "neutral"], "issued": ["Issued", "info"], "paid": ["Paid", "success"], "overdue": ["Overdue", "danger"], "void": ["Void", "neutral"] },
+      "test":       { "notBooked": ["Not booked", "neutral"], "booked": ["Booked", "info"], "passed": ["Passed", "success"], "failed": ["Failed", "danger"], "cancelled": ["Cancelled", "neutral"] },
+      "vehicle":    { "available": ["Available", "success"], "inUse": ["In use", "info"], "serviceDue": ["Service due", "warning"], "offRoad": ["Off road", "danger"], "retired": ["Retired", "neutral"] },
+      "attendance": { "present": ["Present", "success"], "late": ["Late", "warning"], "absent": ["Absent", "danger"], "excused": ["Excused", "neutral"] }
+    }
+  }
+}
