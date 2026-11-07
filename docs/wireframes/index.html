@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+  Noodlegear wireframes: clickable static prototype of the first release.
+  NOT application code. The product is built with React + Fluent UI v9 following AGENTS.md.
+  Requirements: docs/requirements/. Open this file in a browser; no build step or server needed.
+-->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Noodlegear Wireframes</title>
+<link rel="stylesheet" href="wf.css" />
+</head>
+<body>
+<div class="proto" id="proto" role="region" aria-label="Prototype controls"></div>
+<div class="app" id="app"></div>
+<aside class="notes" id="notes" aria-label="Screen notes" hidden></aside>
+<dialog id="dlg" aria-label="Dialog"></dialog>
+<div class="drawer-backdrop" id="panelBackdrop" hidden></div>
+<aside class="drawer" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle" hidden></aside>
+<div class="toaster" id="toaster" aria-live="polite"></div>
+<script src="icons.js"></script>
+<script src="kit.js"></script>
+<script src="data.js"></script>
+<script src="screens-core.js"></script>
+<script src="screens-learners.js"></script>
+<script src="screens-lessons.js"></script>
+<script src="screens-ops.js"></script>
+<script src="screens-billing.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
