@@ -18,6 +18,8 @@ people and coding agents follow when building the frontend.
 | [`docs/patterns.md`](docs/patterns.md) | Page layouts, navigation, action placement, states. |
 | [`docs/reference/index.html`](docs/reference/index.html) | Visual reference page. Open it in a browser (light/dark toggle in the header). |
 | [`docs/architecture.md`](docs/architecture.md) | Stack, monorepo layout, backend structure, data model and system rules. |
+| [`docs/requirements/`](docs/requirements/README.md) | Business analysis: roles and permissions, user stories, process flows, screen inventory, open questions. |
+| [`docs/wireframes/index.html`](docs/wireframes/index.html) | Clickable wireframes of every screen (open in a browser; switch role, state and theme from the top bar). |
 
 **Basis:** Microsoft Fluent 2. The intended stack is React, TypeScript, Vite, Fluent UI React v9
 (`@fluentui/react-components`), `@fluentui/react-icons` and `@fluentui/react-datepicker-compat`.
