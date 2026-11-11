@@ -7,7 +7,7 @@ skills:
 
 You are a senior full-stack engineer working on Noodlegear, a Driving School Management System.
 The repository is a monorepo: `frontend/` (React + TypeScript + Vite + Fluent UI v9) and `backend/`
-(ASP.NET Core + EF Core + PostgreSQL). The owner builds most of it themselves; you write code only
+(ASP.NET Core modular monolith + Dapper + PostgreSQL functions + Liquibase). The owner builds most of it themselves; you write code only
 for what they explicitly ask.
 
 ## Before writing code
@@ -26,7 +26,7 @@ for what they explicitly ask.
 - Follow the dev-guidelines skill: simplest solution, surgical changes, match surrounding style.
 - Frontend: Fluent components and Noodlegear compositions only, tokens only, no inline styles,
   no `any`, formatting through the shared helpers.
-- Backend: respect the layer rules and feature folders in `docs/architecture.md`. Business rules
+- Backend: respect the module boundaries, layer rules and data-access rules (no inline SQL) in `docs/architecture.md §4`. Business rules
   that must never be broken (e.g. no double-booking) are enforced in the database as well as in code.
 - Write or update tests for behaviour you change.
 

@@ -11,7 +11,8 @@ the rules that keep the system correct. It complements the design system docs: f
 
 Noodlegear is used by **one driving school** (possibly with several branches). It is built as a
 **single deployable application**: one React single-page app, one ASP.NET Core Web API and one
-PostgreSQL database. Code is organised by layer and, inside each layer, by feature.
+PostgreSQL database. The backend is a **modular monolith**: code is organised first by business
+module (Learners, Scheduling, Billing, …), and each module follows Clean Architecture inside (§4).
 
 There are no microservices, message brokers or caches. The scale (one school, tens of users) does
 not need them, and each adds operational cost.
@@ -20,11 +21,10 @@ not need them, and each adds operational cost.
 flowchart LR
     U["Owner / Admin / Receptionist / Instructor<br/>(browser)"]
     U --> FE["frontend/<br/>React + TypeScript + Fluent UI v9"]
-    FE -- "JSON over HTTPS<br/>cookie auth" --> API["backend/ Noodlegear.Api<br/>ASP.NET Core Web API"]
-    API --> APP["Application<br/>use cases, validation"]
-    APP --> DOM["Domain<br/>entities, rules"]
-    APP --> INF["Infrastructure<br/>EF Core, Identity"]
-    INF --> DB[("PostgreSQL")]
+    FE -- "JSON over HTTPS<br/>cookie auth" --> API["backend/ Noodlegear.Api<br/>host: wires modules together"]
+    API --> MODS["Modules<br/>Learners · Scheduling · Billing · …<br/>each: Domain, Application, Infrastructure, Api"]
+    MODS -- "Dapper → PostgreSQL functions only" --> DB[("PostgreSQL<br/>one schema per module")]
+    LB["Liquibase<br/>tables + functions"] --> DB
     API --> LOG["Serilog<br/>structured logs"]
 ```
 
@@ -36,14 +36,15 @@ flowchart LR
 | UI components | Fluent UI React v9 (`@fluentui/react-components`), `@fluentui/react-icons`, `@fluentui/react-datepicker-compat` | The only UI libraries. Not MUI. |
 | Styling | Griffel `makeStyles` + Fluent `tokens` + `--ng-*` variables | Generated from `tokens/noodlegear.tokens.json`. |
 | Backend | ASP.NET Core Web API on .NET 10 (LTS) | Controllers, one per resource. |
-| Data access | Entity Framework Core 10 + Npgsql | Code-first migrations. |
+| Data access | Dapper + Npgsql, calling PostgreSQL functions only | No inline SQL in C# (§4 "Data access"). No EF Core. |
+| Database migrations | Liquibase (formatted SQL changelogs), run from its Docker image | Owns every table, constraint and function (§10). |
 | Database | PostgreSQL 18 | Uses `btree_gist` for booking constraints (§6). |
-| Authentication | ASP.NET Core Identity, cookie authentication | Same-origin; no tokens in `localStorage`. |
+| Authentication | ASP.NET Core Identity (core, no EF stores) with custom user/role stores backed by PostgreSQL functions; cookie authentication | Same-origin; no tokens in `localStorage`. |
 | Authorisation | Roles + resource-based policies | See §7. |
 | Validation | FluentValidation | Errors returned as Problem Details (§8). |
 | API documentation | OpenAPI (built-in `Microsoft.AspNetCore.OpenApi`) | Served in Development only. |
 | Logging | Serilog | Structured, to console; container collects it. |
-| Backend tests | xUnit + Testcontainers (PostgreSQL) | No EF in-memory provider. |
+| Backend tests | xUnit + Testcontainers (PostgreSQL + Liquibase) + NetArchTest | Real database with the real functions; architecture tests guard module boundaries. |
 | Containers | Docker + Docker Compose | Local development and deployment. |
 | CI | GitHub Actions | Build, test, type check, images. |
 | Runtime (frontend tooling) | Node.js 24 (LTS) | |
@@ -88,15 +89,16 @@ Noodlegear/
 │       ├── features/           # learners/, instructors/, lessons/, vehicles/, billing/, tests/, reports/
 │       └── app/                # routing, providers, shell wiring
 ├── backend/
-│   ├── Noodlegear.sln
+│   ├── Noodlegear.slnx
+│   ├── database/               # Liquibase master changelog (includes each module's changelog)
 │   ├── src/
-│   │   ├── Noodlegear.Api/
-│   │   ├── Noodlegear.Application/
-│   │   ├── Noodlegear.Domain/
-│   │   └── Noodlegear.Infrastructure/
+│   │   ├── Noodlegear.Api/     # host only
+│   │   ├── Shared/             # Noodlegear.Shared (+ .Infrastructure)
+│   │   └── Modules/            # one folder per module, see §4
 │   └── tests/
 │       ├── Noodlegear.UnitTests/
-│       └── Noodlegear.IntegrationTests/
+│       ├── Noodlegear.IntegrationTests/
+│       └── Noodlegear.ArchitectureTests/
 ├── docker-compose.yml          # db, api, web
 └── .github/workflows/          # CI
 ```
@@ -107,38 +109,97 @@ Noodlegear/
 - Commit messages and pull requests can touch both sides when a feature needs it; keep each change
   to one feature.
 
-## 4. Backend structure
+## 4. Backend structure (modular monolith)
 
-### Layers
+The backend is one deployable ASP.NET Core application made of **modules**. A module owns one
+business capability end to end: its domain, use cases, database schema, functions and endpoints.
+Modules talk to each other only through each other's **Contracts** project.
 
-| Project | Contains | May reference |
-| --- | --- | --- |
-| `Noodlegear.Domain` | Entities, value objects, enums, domain rules. No framework code. | nothing |
-| `Noodlegear.Application` | Use-case services, request/response DTOs, validators, interfaces (e.g. `IClock`). | Domain |
-| `Noodlegear.Infrastructure` | `DbContext`, EF configurations, migrations, Identity, implementations of Application interfaces. | Application, Domain |
-| `Noodlegear.Api` | Controllers, auth setup, middleware, Problem Details, OpenAPI, composition root. | Application, Infrastructure |
+### Modules
 
-The arrow points inwards: Domain knows nothing about EF Core, HTTP or PostgreSQL.
+| Module | Owns | Schema | Requirements epic |
+| --- | --- | --- | --- |
+| `Identity` | User, Role, sign-in, current user | `identity` | AUTH, SET (users) |
+| `Learners` | Learner, ProgressAssessment | `learners` | LRN, ATT (progress) |
+| `Instructors` | Instructor, InstructorAvailability | `instructors` | INS |
+| `Fleet` | Vehicle, VehicleCompliance | `fleet` | VEH |
+| `Scheduling` | LessonType, Lesson, Attendance | `scheduling` | LES, ATT (attendance) |
+| `DrivingTests` | DrivingTest | `driving_tests` | TST |
+| `Billing` | Package, LearnerCredit, Invoice, InvoiceLine, Payment, PaymentAllocation | `billing` | BIL |
+| `Audit` | AuditEntry (fed by events) | `audit` | — |
+| `Settings` | School settings, Branch (optional) | `settings` | SET |
+| `Reports` | Read-only report queries | `reports` | RPT, DSH |
 
-### Feature folders
-
-Inside `Application`, `Api` and `Infrastructure/Configurations`, code is grouped by feature, matching
-the frontend's `features/` folders and the navigation in [`patterns.md §2`](patterns.md):
+### Projects
 
 ```
-Noodlegear.Application/
-├── Learners/        LearnerService.cs, CreateLearnerRequest.cs, CreateLearnerValidator.cs, LearnerDto.cs
-├── Instructors/
-├── Lessons/         # scheduling, availability, attendance
-├── Vehicles/
-├── Billing/         # invoices, payments, packages
-├── Tests/           # driving tests
-├── Reports/
-└── Common/          # paging, errors, IClock, ICurrentUser
+backend/src/
+├── Noodlegear.Api/                       # host: Program.cs, auth, middleware, Problem Details, OpenAPI
+├── Shared/
+│   ├── Noodlegear.Shared/                # Result/Error, paging, IClock, ICurrentUser, IEventBus, IUnitOfWork, IDbExecutor (interfaces only)
+│   └── Noodlegear.Shared.Infrastructure/ # Dapper executor, Npgsql session/unit of work, in-process event bus, clock
+└── Modules/
+    └── Learners/
+        ├── Noodlegear.Learners.Contracts/  # PUBLIC: ILearnersApi, DTOs, integration events
+        └── Noodlegear.Learners/            # INTERNAL (types are `internal` by default)
+            ├── Domain/          entities, value objects, enums, domain rules (no framework code)
+            ├── Application/     use-case services, requests, validators, repository interfaces
+            ├── Infrastructure/  repositories (Dapper → functions), contract implementation
+            ├── Api/             controllers (public, thin)
+            ├── Database/        Liquibase changelog: tables/, functions/
+            └── LearnersModule.cs  # AddLearnersModule(): the module's only public registration point
 ```
 
-Keep a feature's code together. A feature may call another feature's service; it never reaches into
-another feature's tables directly through its own queries.
+### Dependency rules
+
+| From | May reference |
+| --- | --- |
+| `Noodlegear.Api` | every module project, `Shared.Infrastructure` (composition root only) |
+| A module | its own Contracts, **other modules' Contracts**, `Noodlegear.Shared` |
+| A module's Contracts | `Noodlegear.Shared` only |
+| Inside a module | `Domain` → nothing; `Application` → `Domain`; `Infrastructure` → `Application`, `Domain`; `Api` → `Application` |
+
+A module never references another module's implementation project, never reads another module's
+tables, and never calls another module's functions. These rules are enforced by project references
+and by `Noodlegear.ArchitectureTests`.
+
+### Communication between modules
+
+- **Synchronous:** call the other module's contract interface (e.g. `ILearnersApi.GetSummaryAsync`)
+  when an answer is needed now.
+- **Events:** publish an integration event declared in the publisher's Contracts (e.g.
+  `LessonCompleted`). Handlers run **in-process, inside the same database transaction** as the
+  publishing use case, so a failure rolls everything back. Add an outbox only when a handler must
+  call something outside the database.
+- Cross-module references are IDs (`uuid`) only. There are no foreign keys between schemas and no
+  object navigation across modules. A module that needs to display another module's data either asks
+  its contract or keeps its own read copy updated by events.
+
+### Data access
+
+- **No inline SQL in C#.** Every read and write is a PostgreSQL **function** in the module's schema
+  (PostgreSQL procedures cannot return rows cleanly, so functions play the role of stored
+  procedures). Table definitions and functions live in Liquibase changelogs.
+- C# calls functions through `IDbExecutor` (Dapper), passing a function name and a parameter object:
+  `executor.QueryAsync<LearnerRow>("learners.learner_list", new { p_search, p_page, p_page_size })`.
+  The executor builds the call with named-argument notation; the function name is validated against
+  `^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$`.
+- One `NpgsqlConnection` per request (`IDbSession`). Write use cases wrap their work in
+  `IUnitOfWork` so module writes and event handlers commit or roll back together.
+- Naming: tables `schema.snake_case_singular`; functions `schema.<entity>_<verb>` (e.g.
+  `learners.learner_get_by_id`, `learners.learner_create`); parameters `p_<name>`. List functions
+  return `total_count` via `count(*) over ()` for pagination.
+- Repositories are interfaces in `Application`, implemented in `Infrastructure`; they map rows to
+  domain entities by hand (no AutoMapper).
+
+### Principles inside a module
+
+- **Clean Architecture:** dependencies point inwards; the domain knows nothing about Dapper, HTTP or
+  PostgreSQL.
+- **SOLID:** one use-case service per aggregate area with small, focused methods; depend on
+  interfaces (`IClock`, repositories, contracts), never on concrete infrastructure; controllers only
+  translate HTTP to use cases.
+- Mapping is by hand. Validation uses FluentValidation in `Application`.
 
 ## 5. Domain model
 
@@ -207,7 +268,7 @@ never go stale.
 
 ### IDs
 
-- Primary keys are `uuid` (or `bigint`; choose once and use everywhere). They are never shown to users.
+- Primary keys are `uuid` (UUIDv7, generated in C# with `Guid.CreateVersion7()`). They are never shown to users.
 - Display IDs follow [`patterns.md §12`](patterns.md): `L-10234`, `I-021`, `INV-2026-0142`. They come
   from PostgreSQL sequences and are unique. Invoice numbers restart each year and must have no gaps.
 
@@ -230,8 +291,8 @@ ALTER TABLE lessons ADD CONSTRAINT lessons_no_instructor_overlap
 ```
 
 The API catches the constraint violation and returns `409 Conflict` with a message such as
-"Sam Patel already has a lesson from 14:00 to 15:00." Add these constraints with raw SQL in an EF
-migration.
+"Sam Patel already has a lesson from 14:00 to 15:00." These constraints live in the Scheduling
+module's Liquibase changelog.
 
 ### Money
 
@@ -281,14 +342,17 @@ migration.
 | Integration tests | API endpoints against a real PostgreSQL, including the booking constraints. | xUnit, `WebApplicationFactory`, Testcontainers |
 | Frontend | Components, hooks, accessibility. | **Proposed:** Vitest, Testing Library, axe |
 
-Do not use the EF Core in-memory provider; it cannot run PostgreSQL constraints and hides real bugs.
+Integration tests start PostgreSQL with Testcontainers and apply the real Liquibase changelog, so
+constraints and functions are tested as deployed. Architecture tests (NetArchTest) enforce §4's
+dependency rules.
 
 ## 10. Delivery and operations
 
 - **Local development:** `docker compose up db` for PostgreSQL; run the API with `dotnet run` and the
   frontend with `npm run dev`. `docker compose up` runs all three.
-- **Migrations:** create with `dotnet ef migrations add`; apply as a separate deploy step using an EF
-  migration bundle. The API does not migrate the database on startup.
+- **Migrations:** Liquibase, run from its Docker image (`docker compose run --rm liquibase update`).
+  Tables and constraints are changesets that run once; functions use `CREATE OR REPLACE` with
+  `runOnChange:true`. Applied as a separate deploy step; the API does not migrate on startup.
 - **CI (GitHub Actions):** on every pull request, build and test the backend, and type check, lint,
   test and build the frontend. Build Docker images on `main`.
 - **Backups:** nightly `pg_dump` kept off the server, with a restore tested at least once a quarter.
@@ -299,6 +363,5 @@ Do not use the EF Core in-memory provider; it cannot run PostgreSQL constraints 
 ## 11. Open decisions
 
 - Approve or replace the **Proposed** items in §2.
-- `uuid` or `bigint` primary keys (§5).
 - Whether there is more than one branch (adds `Branch` and a branch filter).
 - Hosting target for production (a single VM with Docker Compose is enough to start).
